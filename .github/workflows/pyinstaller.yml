@@ -16,6 +16,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Install the repo
+      run: |
+        pip install .
+
     - name: Package Application
       uses: JackMcKew/pyinstaller-action-windows@python3-10-pyinstaller-5-3
       with:
