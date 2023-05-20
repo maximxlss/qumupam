@@ -28,4 +28,4 @@ jobs:
         prerelease: false
         title: "Windows Build (Pyinstaller)"
         files: |
-          dist/qumupam.exe
+          dist/windows/qumupam.exe
