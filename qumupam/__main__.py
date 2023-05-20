@@ -3,10 +3,10 @@ import sys
 import platform
 import time
 from pytermgui import tim
-from .utilities import install_success_regex, uninstall_success_regex, ADBStatus, Mode,\
-    check_for_adb, get_packages, get_users, install_existing, prompt_for_mode, \
-    prompt_for_packages, prompt_for_preserve_data, prompt_for_user, uninstall, \
-    wait_for_device
+from qumupam.utilities import install_success_regex, uninstall_success_regex, \
+    ADBStatus, Mode, check_for_adb, get_packages, get_users, install_existing, \
+    prompt_for_mode, prompt_for_packages, prompt_for_preserve_data, prompt_for_user, \
+    uninstall, wait_for_device
 
 def main():
     adb_status = check_for_adb()
