@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "qumupam"
+version = "0.1.0"
+description = "A little tool to manage packages on Meta Quest with multiple users."
+authors = ["Maximxls <maximxlssoff@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+PyTermGUI = "^7.4.0"
+inquirer = "^3.1.3"
+
+[tool.poetry.scripts]
+qumupam = 'qumupam.__main__:main'
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
