@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import re
 from subprocess import check_output
 import subprocess
@@ -342,3 +343,7 @@ def _main():
 
 if __name__ == "__main__":
     _main()
+
+    if platform.system() == "Windows" and getattr(sys, 'frozen', False) \
+       and hasattr(sys, '_MEIPASS'):
+        os.system("pause")
