@@ -2,28 +2,27 @@ name: Package Application with Pyinstaller
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches:
+      - "master"
+  workflow_dispatch:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-
     - uses: actions/checkout@v2
 
     - name: Package Application
-      uses: JackMcKew/pyinstaller-action-windows@main
+      uses: JackMcKew/pyinstaller-action-windows@python3-10-pyinstaller-5-3
       with:
         path: ./
 
-    - uses: actions/upload-artifact@v2
+    - uses: "marvinpinto/action-automatic-releases@latest"
       with:
-        name: qumupam.exe
-        path: dist
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "latest"
+        prerelease: false
+        title: "Windows Build (Pyinstaller)"
+        files: |
+          dist/qumupam.exe
