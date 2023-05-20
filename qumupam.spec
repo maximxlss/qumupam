@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(
-    ['qumupam.py'],
+    ['qumupam\\__main__.py'],
     pathex=[],
     binaries=[],
     datas=[],
