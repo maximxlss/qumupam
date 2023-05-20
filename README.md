@@ -12,8 +12,8 @@ A little tool to manage packages on Meta Quest with multiple users.
 1. Download [qumupam.exe](https://github.com/maximxlss/qumupam/releases/download/latest/qumupam.exe)
 2. Connect your Quest in Developer Mode and run `qumupam.exe`
 ### Linux
-1. Run `wget https://raw.githubusercontent.com/maximxlss/qumupam/master/qumupam.py`
-2. Connect your Quest in Developer Mode and run `./qumupam.py` (script automatically runs pip to install dependencies)
+1. Run `pip install git+https://github.com/maximxlss/qumupam`
+2. Connect your Quest in Developer Mode and run `qumupam`
 
 ## 💬 Motivation
 Recently, I wanted to lend my Quest to another person, but wanted them to have a separate account. Luckily, for some time now Quest supports multiple accounts. However, there is no way to share sideloaded apps to another account without completely reinstalling the app. Moreover, I couldn't find ANY info on how do you do that.
@@ -28,5 +28,3 @@ Meet QUMUPAM - a tool made to do exactly that! It can "install" and "uninstall" 
 ## 📓 Notes
 - Install/uninstall is effectively unhide/hide in this context. I only use install/uninstall because it's how it's called internally.
 - The way this tool works is not exclusive to Meta Quest. It probably works for any android system with multiple users, but I didn't test that and don't plan on doing that.
-
-
