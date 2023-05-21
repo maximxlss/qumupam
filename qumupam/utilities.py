@@ -123,7 +123,7 @@ def get_apk_label(path: str) -> Optional[str]:
         return None
 
     a = label_line.find("'")
-    b = label_line.find("'", a + 1)
+    b = label_line.rfind("'", a + 1)
 
     return label_line[a + 1 : b]
 
