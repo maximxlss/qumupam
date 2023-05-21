@@ -113,7 +113,7 @@ def check_aapt2_works() -> bool:
         return e.returncode == 1
 
 
-@cachier()
+@cachier(pickle_reload=False)
 def get_apk_label(path: str) -> Optional[str]:
     aapt2_out = run_aapt2(["dump", "badging", path]).split("\n")
 
