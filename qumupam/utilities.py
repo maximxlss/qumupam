@@ -180,6 +180,18 @@ def uninstall(package: Package, uid: Optional[int], preserve_data=True) -> str:
     return run_pm(pm_command)
 
 
+def get_unsafe_to_uninstall(users: list[User]) -> set[str]:
+    """Returns packages that are installed for only one user.
+    These should be removed completely on uninstall, or will be
+    left hanging with no ability to install back (without reinstalling)."""
+    seen = set()
+    safe = set()
+    for user in users:
+        safe.update(user.packages.intersection(seen))
+        seen.update(user.packages)
+    return seen.difference(safe)
+
+
 def prompt_for_user(users) -> Optional[User]:
     choices = [(user.name, user) for user in users]
 

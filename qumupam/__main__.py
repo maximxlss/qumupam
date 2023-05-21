@@ -4,6 +4,7 @@ import platform
 import time
 from pytermgui import tim
 from qumupam.utilities import (
+    get_unsafe_to_uninstall,
     install_success_regex,
     uninstall_success_regex,
     ADBStatus,
@@ -86,6 +87,28 @@ def main():
         if preserve_data is None:
             return
 
+    unsafe_to_uninstall = get_unsafe_to_uninstall(users)
+
+    pending_unsafe = pending_uninstall.intersection(unsafe_to_uninstall)
+    remove_packages = False
+
+    if pending_unsafe != set():
+        tim.print(
+            "[red]IMPORTANT WARNING:[/] You are trying to uninstall packages from the "
+            "last user that has them. That would break them, and to avoid confusion, "
+            "it's advised to remove them completely (or if you want to install them "
+            "on another account, do that first). The following packages are affected:\n"
+            + "".join(f"        - {package}\n" for package in pending_unsafe)
+            + 'To remove them, type "remove" and press enter.\n'
+            'To leave them broken, type "break" and press enter.\n'
+            "To skip them and continue, press enter.\n"
+        )
+        inp = input("> ")
+        if inp == "remove":
+            remove_packages = True
+        elif inp != "break":
+            pending_uninstall.difference_update(pending_unsafe)
+
     time_start = time.time()
 
     errors_encountered = False
@@ -109,7 +132,10 @@ def main():
         tim.print("[grey]INFO:[/] No packages to uninstall!")
     elif pending_uninstall != set():
         for package in pending_uninstall:
-            output = uninstall(package, user.uid, preserve_data=preserve_data)
+            if not remove_packages:
+                output = uninstall(package, user.uid, preserve_data=preserve_data)
+            else:
+                output = uninstall(package, None, preserve_data=preserve_data)
             if not uninstall_success_regex.match(output):
                 tim.print(
                     "[orange]WARNING:[/] Encountered the following "
