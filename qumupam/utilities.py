@@ -92,10 +92,10 @@ def download_aapt2():
     with TemporaryDirectory() as tdir:
         path = Path(tdir) / "aapt2"
         path = str(path)
-        
+
         with open(path, "wb") as f:
             f.write(data)
-        
+
         run_cmd(["adb", "push", path, AAPT2_PATH_ON_DEVICE])
 
     run_cmd(["adb", "shell", "chmod", "+x", AAPT2_PATH_ON_DEVICE])
@@ -116,7 +116,7 @@ def check_aapt2_works() -> bool:
 @cachier()
 def get_apk_label(path: str) -> Optional[str]:
     aapt2_out = run_aapt2(["dump", "badging", path]).split("\n")
-    
+
     label_line = next((s for s in aapt2_out if s.startswith("application-label")), None)
 
     if label_line is None:
