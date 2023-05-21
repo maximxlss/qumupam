@@ -50,7 +50,7 @@ def main():
 
     tim.print(
         "[grey]INFO:[/] Gathering package information...\n"
-        "[green]HINT:[/]This can be slow on the first run, be patient!\n"
+        "[green]HINT:[/]This can be slow on the first run, be patient!"
     )
     all_packages = get_packages()
     users = get_users()
