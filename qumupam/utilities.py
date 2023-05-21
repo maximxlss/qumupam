@@ -10,6 +10,7 @@ import inquirer as inq
 from tempfile import TemporaryDirectory
 import urllib.request
 from tqdm import tqdm
+from cachier import cachier
 
 
 AAPT2_PATH_ON_DEVICE = "/data/local/tmp/aapt2"
@@ -127,6 +128,7 @@ def get_apk_path(package_name) -> str:
     return run_pm(["path", package_name]).strip().removeprefix("package:")
 
 
+@cachier()
 def get_package_label(package_name) -> Optional[str]:
     apk = get_apk_path(package_name)
     return get_apk_label(apk)
