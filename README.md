@@ -19,7 +19,7 @@ A little tool to manage packages on Meta Quest with multiple users.
 Recently, I wanted to lend my Quest to another person, but wanted them to have a separate account. Luckily, for some time now Quest supports multiple accounts. However, there is no way to share sideloaded apps to another account without completely reinstalling the app. Moreover, I couldn't find ANY info on how do you do that.
 
 ## 📄 Descriprion
-Meet QUMUPAM - a tool made to do exactly that! It can "install" and "uninstall" packages to and from alternate accounts on your Quest. You can install/uninstall all apps or choose which would be available. This _does not_ take up space, see notes.
+Meet QUMUPAM - a tool made to do exactly that! It can "install" and "uninstall" packages to and from different accounts on your Quest. You can install/uninstall all apps or choose which would be available. This _does not_ take up space, see notes.
 
 ## ⚠️ Dangers
 - This has the potential to delete your apps and saves. Please be careful and read whatever the tool says to you.
