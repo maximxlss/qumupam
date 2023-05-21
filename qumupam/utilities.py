@@ -60,22 +60,27 @@ class Package(NamedTuple):
 
 
 def get_packages(uid=None, third_party_only=True, progress_bar=True) -> set[Package]:
-    pm_command = ["list", "packages"]
+    pm_command = ["list", "packages", "-f"]
     if uid is not None:
         pm_command += ["--user", str(uid)]
     if third_party_only:
         pm_command += ["-3"]
 
-    pm_output = run_pm(pm_command)
+    pm_output = run_pm(pm_command).split()
 
-    package_names = [s.removeprefix("package:") for s in pm_output.split()]
+    packages = []
 
     if progress_bar:
-        package_names_it = tqdm(package_names)
+        pm_output_it = tqdm(pm_output)
     else:
-        package_names_it = iter(package_names)
+        pm_output_it = iter(pm_output)
 
-    packages = [Package(name, get_package_label(name)) for name in package_names_it]
+    for line in pm_output_it:
+        line = line.removeprefix("package:")
+        i = line.rfind("=")
+        name = line[i + 1 :]
+        apk = line[:i]
+        packages.append(Package(name, get_apk_label(apk)))
 
     return set(packages)
 
