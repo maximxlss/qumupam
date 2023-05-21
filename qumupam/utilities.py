@@ -44,7 +44,20 @@ def wait_for_device():
     run_cmd(["adb", "wait-for-device"])
 
 
-def get_packages(uid=None, third_party_only=True) -> set[str]:
+class Package(NamedTuple):
+    name: str
+    label: Optional[str]
+
+    def __str__(self):
+        if self.label is None:
+            return self.name
+        else:
+            return f"{self.label} ({self.name})"
+
+    __repr__ = __str__
+
+
+def get_packages(uid=None, third_party_only=True) -> set[Package]:
     pm_command = ["list", "packages"]
     if uid is not None:
         pm_command += ["--user", str(uid)]
@@ -53,7 +66,9 @@ def get_packages(uid=None, third_party_only=True) -> set[str]:
 
     pm_output = run_pm(pm_command)
 
-    packages = [s.removeprefix("package:") for s in pm_output.split()]
+    package_names = [s.removeprefix("package:") for s in pm_output.split()]
+
+    packages = [Package(name, get_package_label(name)) for name in package_names]
 
     return set(packages)
 
@@ -88,7 +103,7 @@ def check_aapt2_works() -> bool:
         return e.returncode == 1
 
 
-def get_apk_label(path) -> Optional[str]:
+def get_apk_label(path: str) -> Optional[str]:
     aapt2_out = run_aapt2(["dump", "badging", path]).split("\n")
     
     label_line = next((s for s in aapt2_out if s.startswith("application-label")), None)
@@ -102,19 +117,19 @@ def get_apk_label(path) -> Optional[str]:
     return label_line[a + 1 : b]
 
 
-def get_apk_path(package) -> str:
-    return run_pm(["path", package]).strip().removeprefix("package:")
+def get_apk_path(package_name) -> str:
+    return run_pm(["path", package_name]).strip().removeprefix("package:")
 
 
-def get_package_label(package) -> Optional[str]:
-    apk = get_apk_path(package)
+def get_package_label(package_name) -> Optional[str]:
+    apk = get_apk_path(package_name)
     return get_apk_label(apk)
 
 
 class User(NamedTuple):
     name: str
     uid: int
-    packages: set[str]
+    packages: set[Package]
 
 
 def get_users() -> list[User]:
@@ -138,17 +153,17 @@ def get_users() -> list[User]:
     return users
 
 
-def install_existing(package: str, uid: int) -> str:
-    return run_pm(["install-existing", "--user", str(uid), package])
+def install_existing(package: Package, uid: int) -> str:
+    return run_pm(["install-existing", "--user", str(uid), package.name])
 
 
-def uninstall(package: str, uid: Optional[int], preserve_data=True) -> str:
+def uninstall(package: Package, uid: Optional[int], preserve_data=True) -> str:
     pm_command = ["uninstall"]
     if uid is not None:
         pm_command += ["--user", str(uid)]
     if preserve_data:
         pm_command += ["-k"]
-    pm_command += [package]
+    pm_command += [package.name]
     return run_pm(pm_command)
 
 
@@ -232,12 +247,21 @@ def prompt_for_mode() -> Optional[Mode]:
     return answers["mode"]
 
 
-def prompt_for_packages(all_packages, cur_packages) -> Optional[set[str]]:
+def prompt_for_packages(
+    all_packages: set[Package], cur_packages: set[Package]
+) -> Optional[set[Package]]:
+    # choices  = []
+    # for package in all_packages:
+    #     label = package.name
+    #     if package.label is not None:
+    #         label = f"{package.label} ({package.name})"
+    #     choices.append((label, package))
+
     questions = [
         inq.Checkbox(
             "packages",
             message="Select packages (right to select, left to deselect):",
-            choices=sorted(list(all_packages)),
+            choices=sorted(all_packages, key=str),
             default=list(cur_packages),
         )
     ]
