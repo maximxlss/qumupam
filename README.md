@@ -26,5 +26,5 @@ Meet QUMUPAM - a tool made to do exactly that! It can "install" and "uninstall" 
 - Although the tool uses official tools internally and has very little room for critical bugs, it technically can break on some apps, breaking them or deleting data. I can't guarantee your data safety.
 
 ## 📓 Notes
-- Install/uninstall is effectively unhide/hide in this context. I only use install/uninstall because it's how it's called internally.
+- Install/uninstall is effectively show/hide in this context. I only use install/uninstall because it's how it's called internally.
 - The way this tool works is not exclusive to Meta Quest. It probably works for any android system with multiple users, but I didn't test that and don't plan on doing that.
