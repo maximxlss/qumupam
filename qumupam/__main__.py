@@ -85,6 +85,7 @@ def main():
         new_packages = prompt_for_packages(all_packages, user.packages)
         if new_packages is None:
             return
+        new_packages = set(new_packages)
         pending_install = new_packages.difference(user.packages)
         pending_uninstall = user.packages.difference(new_packages)
 

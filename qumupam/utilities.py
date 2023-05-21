@@ -5,7 +5,7 @@ import re
 from subprocess import CalledProcessError, check_output
 from enum import Enum
 import sys
-from typing import NamedTuple, Optional
+from typing import Iterable, NamedTuple, Optional
 import inquirer as inq
 from tempfile import TemporaryDirectory
 import urllib.request
@@ -259,21 +259,19 @@ def prompt_for_mode() -> Optional[Mode]:
 
 
 def prompt_for_packages(
-    all_packages: set[Package], cur_packages: set[Package]
-) -> Optional[set[Package]]:
-    # choices  = []
-    # for package in all_packages:
-    #     label = package.name
-    #     if package.label is not None:
-    #         label = f"{package.label} ({package.name})"
-    #     choices.append((label, package))
+    all_packages: Iterable[Package], cur_packages: Iterable[Package]
+) -> Optional[Iterable[Package]]:
+    all_packages = list(all_packages)
+    cur_packages = list(cur_packages)
+
+    all_packages.sort(key=str)
 
     questions = [
         inq.Checkbox(
             "packages",
             message="Select packages (right to select, left to deselect):",
-            choices=sorted(all_packages, key=str),
-            default=list(cur_packages),
+            choices=[(str(package), package) for package in all_packages],
+            default=cur_packages,
         )
     ]
 
@@ -282,7 +280,7 @@ def prompt_for_packages(
     if answers is None:
         return None
 
-    return set(answers["packages"])
+    return answers["packages"]
 
 
 install_success_regex = re.compile(r"Package (.*) installed for user: (.*)")
