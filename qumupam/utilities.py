@@ -9,6 +9,7 @@ from typing import NamedTuple, Optional
 import inquirer as inq
 from tempfile import TemporaryDirectory
 import urllib.request
+from tqdm import tqdm
 
 
 AAPT2_PATH_ON_DEVICE = "/data/local/tmp/aapt2"
@@ -57,7 +58,7 @@ class Package(NamedTuple):
     __repr__ = __str__
 
 
-def get_packages(uid=None, third_party_only=True) -> set[Package]:
+def get_packages(uid=None, third_party_only=True, progress_bar=True) -> set[Package]:
     pm_command = ["list", "packages"]
     if uid is not None:
         pm_command += ["--user", str(uid)]
@@ -68,7 +69,12 @@ def get_packages(uid=None, third_party_only=True) -> set[Package]:
 
     package_names = [s.removeprefix("package:") for s in pm_output.split()]
 
-    packages = [Package(name, get_package_label(name)) for name in package_names]
+    if progress_bar:
+        package_names_it = tqdm(package_names)
+    else:
+        package_names_it = iter(package_names)
+
+    packages = [Package(name, get_package_label(name)) for name in package_names_it]
 
     return set(packages)
 
