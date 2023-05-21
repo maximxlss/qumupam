@@ -159,7 +159,7 @@ def get_users() -> list[User]:
         name = s[a + 1 : b]
         uid = int(s[:a])
 
-        packages = get_packages(uid)
+        packages = get_packages(uid, progress_bar=False)
 
         users.append(User(name, uid, packages))
 

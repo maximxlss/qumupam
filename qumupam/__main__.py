@@ -48,8 +48,8 @@ def main():
         )
         wait_for_device()
 
-    users = get_users()
     all_packages = get_packages()
+    users = get_users()
 
     user = prompt_for_user(users)
 
