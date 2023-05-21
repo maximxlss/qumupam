@@ -60,15 +60,6 @@ def main():
     if user is None:
         return
 
-    if user.uid == 0 or len(users) == 1:
-        tim.print(
-            "[red]WARNING:[/] You are trying to use this tool on the main account. "
-            "Uninstalling from the main account [red]removes the app completely[/] "
-            "(including from additional accounts) and you would need to reinstall "
-            "it from scratch to use again. Installing is therefore non-functional. "
-            'Type "remove" when prompted for confirmation if you are sure.\n'
-        )
-
     mode = prompt_for_mode()
 
     if mode is None:
@@ -117,12 +108,6 @@ def main():
     if mode != Mode.InstallAll and pending_uninstall == set():
         tim.print("[grey]INFO:[/] No packages to uninstall!")
     elif pending_uninstall != set():
-        if user.uid == 0 or len(users) == 1:
-            if input("Confirmation: ") != "remove":
-                return tim.print(
-                    "[grey]INFO:[/] Exiting.\n"
-                    "[green]HINT:[/] If you are confused, read warnings."
-                )
         for package in pending_uninstall:
             output = uninstall(package, user.uid, preserve_data=preserve_data)
             if not uninstall_success_regex.match(output):
