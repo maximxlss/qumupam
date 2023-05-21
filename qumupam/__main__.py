@@ -48,6 +48,10 @@ def main():
         )
         wait_for_device()
 
+    tim.print(
+        "[grey]INFO:[/] Gathering package information...\n"
+        "[green]HINT:[/]This can be slow on the first run, be patient!\n"
+    )
     all_packages = get_packages()
     users = get_users()
 
@@ -97,7 +101,6 @@ def main():
     if pending_install == set():
         tim.print("[grey]INFO:[/] No packages to install!")
     else:
-        tim.print("[grey]INFO:[/] Starting install...")
         for package in pending_install:
             output = install_existing(package, user.uid)
             if not install_success_regex.match(output):
@@ -119,7 +122,6 @@ def main():
                     "[grey]INFO:[/] Exiting.\n"
                     "[green]HINT:[/] If you are confused, read warnings."
                 )
-        tim.print("[grey]INFO:[/] Starting uninstall...")
         for package in pending_uninstall:
             output = uninstall(package, user.uid, preserve_data=preserve_data)
             if not uninstall_success_regex.match(output):
