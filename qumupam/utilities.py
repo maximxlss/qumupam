@@ -187,7 +187,7 @@ def prompt_for_user(users) -> Optional[User]:
     questions = [
         inq.List(
             "user",
-            message="Select user:",
+            message="Select user",
             choices=choices,
             default=users[1] if len(users) > 1 else users[0],
             carousel=True,
@@ -229,7 +229,7 @@ def prompt_for_mode() -> Optional[Mode]:
     questions = [
         inq.List(
             "mode",
-            message="Mode:",
+            message="Mode",
             choices=[
                 (
                     "Install (show) all available third-party packages for "
@@ -269,7 +269,7 @@ def prompt_for_packages(
     questions = [
         inq.Checkbox(
             "packages",
-            message="Select packages (right to select, left to deselect):",
+            message="Select packages (right to select, left to deselect)",
             choices=[(str(package), package) for package in all_packages],
             default=cur_packages,
         )

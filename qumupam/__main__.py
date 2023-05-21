@@ -65,8 +65,8 @@ def main():
             "[red]WARNING:[/] You are trying to use this tool on the main account. "
             "Uninstalling from the main account [red]removes the app completely[/] "
             "(including from additional accounts) and you would need to reinstall "
-            "it from scratch to use again. Installing is also pointless. "
-            'Type "remove" when prompted for confirmation if you are sure.'
+            "it from scratch to use again. Installing is therefore non-functional. "
+            'Type "remove" when prompted for confirmation if you are sure.\n'
         )
 
     mode = prompt_for_mode()
