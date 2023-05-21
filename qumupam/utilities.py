@@ -56,8 +56,6 @@ class Package(NamedTuple):
         else:
             return f"{self.label} ({self.name})"
 
-    __repr__ = __str__
-
 
 def get_packages(uid=None, third_party_only=True, progress_bar=True) -> set[Package]:
     pm_command = ["list", "packages", "-f"]
