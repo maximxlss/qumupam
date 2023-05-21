@@ -19,6 +19,8 @@ from qumupam.utilities import (
     prompt_for_user,
     uninstall,
     wait_for_device,
+    check_for_aapt2,
+    download_aapt2,
 )
 
 
@@ -48,6 +50,9 @@ def main():
             "[grey]INFO:[/] Waiting for device..."
         )
         wait_for_device()
+
+    if not check_for_aapt2():
+        download_aapt2()
 
     tim.print(
         "[grey]INFO:[/] Gathering package information...\n"
