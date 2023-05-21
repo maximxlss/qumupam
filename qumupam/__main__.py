@@ -19,7 +19,7 @@ from qumupam.utilities import (
     prompt_for_user,
     uninstall,
     wait_for_device,
-    check_for_aapt2,
+    check_aapt2_works,
     download_aapt2,
 )
 
@@ -51,7 +51,7 @@ def main():
         )
         wait_for_device()
 
-    if not check_for_aapt2():
+    if not check_aapt2_works():
         download_aapt2()
 
     tim.print(
