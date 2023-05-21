@@ -61,6 +61,8 @@ def get_packages(uid=None, third_party_only=True, progress_bar=True) -> set[Pack
     pm_command = ["list", "packages", "-f"]
     if uid is not None:
         pm_command += ["--user", str(uid)]
+    else:
+        pm_command += ["-a"]
     if third_party_only:
         pm_command += ["-3"]
 
