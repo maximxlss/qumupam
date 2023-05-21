@@ -127,11 +127,11 @@ def get_apk_label(path: str) -> Optional[str]:
     return label_line[a + 1 : b]
 
 
+@cachier()
 def get_apk_path(package_name) -> str:
     return run_pm(["path", package_name]).strip().removeprefix("package:")
 
 
-@cachier()
 def get_package_label(package_name) -> Optional[str]:
     apk = get_apk_path(package_name)
     return get_apk_label(apk)
