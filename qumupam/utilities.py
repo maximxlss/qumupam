@@ -113,6 +113,7 @@ def check_aapt2_works() -> bool:
         return e.returncode == 1
 
 
+@cachier()
 def get_apk_label(path: str) -> Optional[str]:
     aapt2_out = run_aapt2(["dump", "badging", path]).split("\n")
     
@@ -127,7 +128,6 @@ def get_apk_label(path: str) -> Optional[str]:
     return label_line[a + 1 : b]
 
 
-@cachier()
 def get_apk_path(package_name) -> str:
     return run_pm(["path", package_name]).strip().removeprefix("package:")
 
