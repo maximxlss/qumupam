@@ -99,9 +99,9 @@ def main():
 
     errors_encountered = False
 
-    if pending_install == set():
+    if mode != Mode.UninstallAll and pending_install == set():
         tim.print("[grey]INFO:[/] No packages to install!")
-    else:
+    elif pending_install != set():
         for package in pending_install:
             output = install_existing(package, user.uid)
             if not install_success_regex.match(output):
@@ -114,9 +114,9 @@ def main():
             else:
                 tim.print(f"[green]SUCCESS:[/] Installed {package}.")
 
-    if pending_uninstall == set():
+    if mode != Mode.InstallAll and pending_uninstall == set():
         tim.print("[grey]INFO:[/] No packages to uninstall!")
-    else:
+    elif pending_uninstall != set():
         if user.uid == 0 or len(users) == 1:
             if input("Confirmation: ") != "remove":
                 return tim.print(
