@@ -28,3 +28,4 @@ Meet QUMUPAM - a tool made to do exactly that! It can "install" and "uninstall" 
 ## 📓 Notes
 - Install/uninstall is effectively show/hide in this context. I only use install/uninstall because it's how it's called internally.
 - The way this tool works is not exclusive to Meta Quest. It probably works for any android system with multiple users, but I didn't test that and don't plan on doing that.
+- If you make Beat Saber installed only on one account and install BMBF, you can bring it back on the other accounts and it will be modded there too.
