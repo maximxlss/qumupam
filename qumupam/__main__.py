@@ -42,7 +42,9 @@ def main():
         tim.print(
             "[orange]WARNING:[/] No device detected! Possible causes:\n"
             "         - Developer Mode is off (check in the app on the phone)\n"
-            "         - Unsupported ADB drivers\n"
+            "         - Unsupported ADB drivers (you can get the official ones here: "
+            "[~https://developer.oculus.com/downloads/package/oculus-adb-drivers/]"
+            "https://developer.oculus.com/downloads/package/oculus-adb-drivers/[/~])\n"
             "         - Faulty USB port, power only cable, etc.\n"
             "[grey]INFO:[/] Waiting for device..."
         )
@@ -134,10 +136,10 @@ def main():
         tim.print("[grey]INFO:[/] No packages to uninstall!")
     elif pending_uninstall != set():
         for package in pending_uninstall:
-            if not remove_packages:
-                output = uninstall(package, user.uid, preserve_data=preserve_data)
-            else:
+            if remove_packages and package in pending_unsafe:
                 output = uninstall(package, None, preserve_data=preserve_data)
+            else:
+                output = uninstall(package, user.uid, preserve_data=preserve_data)
             if not uninstall_success_regex.match(output):
                 tim.print(
                     "[orange]WARNING:[/] Encountered the following "
