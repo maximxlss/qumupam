@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 
+from io import BytesIO
 from pathlib import Path
+import platform
 import re
+import stat
 from subprocess import CalledProcessError, check_output
 from enum import Enum
 import sys
@@ -11,9 +14,37 @@ from tempfile import TemporaryDirectory
 import urllib.request
 from tqdm import tqdm
 from cachier import cachier
+import zipfile
 
 
 AAPT2_PATH_ON_DEVICE = "/data/local/tmp/aapt2"
+ADB_URL_WINDOWS = (
+    "https://dl.google.com/android/repository/platform-tools-latest-windows.zip"
+)
+ADB_URL_LINUX = (
+    "https://dl.google.com/android/repository/platform-tools-latest-linux.zip"
+)
+ADB_URL_MAC = (
+    "https://dl.google.com/android/repository/platform-tools-latest-darwin.zip"
+)
+
+
+def get_adb_url():
+    if platform.system() == "Windows":
+        return ADB_URL_WINDOWS
+    elif platform.system() == "Linux":
+        return ADB_URL_LINUX
+    elif platform.system() == "Darwin":
+        return ADB_URL_MAC
+    else:
+        raise NotImplementedError(f"No ADB for system {platform.system()}")
+
+
+ADB_PATH = Path.home() / ".cache" / "qumupam-adb" / "adb"
+
+
+if platform.system() == "Windows":
+    ADB_PATH = ADB_PATH.with_suffix(".exe")
 
 
 class ADBStatus(Enum):
@@ -27,23 +58,48 @@ def run_cmd(cmd: list[str]) -> str:
 
 
 def run_pm(cmd: list[str]) -> str:
-    return run_cmd(["adb", "shell", "pm", *cmd])
+    return run_cmd([ADB_PATH, "shell", "pm", *cmd])
+
+
+def download_adb():
+    url = get_adb_url()
+
+    with urllib.request.urlopen(url) as f:
+        data = f.read()
+
+    archive = zipfile.ZipFile(BytesIO(data))
+    file = archive.read(
+        "platform-tools/adb.exe"
+        if platform.system() == "Windows"
+        else "platform-tools/adb"
+    )
+
+    ADB_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(ADB_PATH, "wb") as f:
+        f.write(file)
+
+    if platform.system() != "Windows":
+        ADB_PATH.chmod(ADB_PATH.stat().st_mode | stat.S_IEXEC)
 
 
 def check_for_adb() -> ADBStatus:
-    try:
-        adb_output = run_cmd(["adb", "devices"])
-    except FileNotFoundError:
+    if not ADB_PATH.exists():
         return ADBStatus.Unavailible
 
-    if adb_output == "List of devices attached\n\n":
+    adb_output = run_cmd([ADB_PATH, "devices"])
+
+    if (
+        adb_output == "List of devices attached\n\n"
+        or "no devices/emulators found" in adb_output
+    ):
         return ADBStatus.NoDevice
 
     return ADBStatus.Ready
 
 
 def wait_for_device():
-    run_cmd(["adb", "wait-for-device"])
+    run_cmd([ADB_PATH, "wait-for-device"])
 
 
 class Package(NamedTuple):
@@ -98,18 +154,18 @@ def download_aapt2():
         with open(path, "wb") as f:
             f.write(data)
 
-        run_cmd(["adb", "push", path, AAPT2_PATH_ON_DEVICE])
+        run_cmd([ADB_PATH, "push", path, AAPT2_PATH_ON_DEVICE])
 
-    run_cmd(["adb", "shell", "chmod", "+x", AAPT2_PATH_ON_DEVICE])
+    run_cmd([ADB_PATH, "shell", "chmod", "+x", AAPT2_PATH_ON_DEVICE])
 
 
 def run_aapt2(cmd: list[str]) -> str:
-    return run_cmd(["adb", "shell", AAPT2_PATH_ON_DEVICE, *cmd])
+    return run_cmd([ADB_PATH, "shell", AAPT2_PATH_ON_DEVICE, *cmd])
 
 
 def check_aapt2_works() -> bool:
     try:
-        run_aapt2(["-h"])
+        run_aapt2(["-h"], silent=True)
         return True
     except CalledProcessError as e:
         return e.returncode == 1
@@ -118,7 +174,7 @@ def check_aapt2_works() -> bool:
 @cachier(pickle_reload=False)
 def get_apk_label(path: str) -> Optional[str]:
     try:
-        aapt2_out = run_aapt2(["dump", "badging", path]).split("\n")
+        aapt2_out = run_aapt2(["dump", "badging", path], silent=True).split("\n")
     except CalledProcessError:
         return None
 

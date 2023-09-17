@@ -4,6 +4,7 @@ import platform
 import time
 from pytermgui import tim
 from qumupam.utilities import (
+    download_adb,
     get_unsafe_to_uninstall,
     install_success_regex,
     uninstall_success_regex,
@@ -28,17 +29,11 @@ def main():
     adb_status = check_for_adb()
 
     if adb_status == ADBStatus.Unavailible:
-        if platform.system() != "Windows":
-            return tim.print(
-                "[red]ERROR:[/] ADB is unavailible! Install ADB and rerun the script."
-            )
-        return tim.print(
-            "[red]ERROR:[/] ADB is unavailible! Install drivers from "
-            "[~https://developer.oculus.com/downloads/package/oculus-adb-drivers/]"
-            "https://developer.oculus.com/downloads/package/oculus-adb-drivers/[/~]"
-            " and rerun the script\n"
-        )
-    elif adb_status == ADBStatus.NoDevice:
+        tim.print("[grey]INFO:[/] Downloading ADB...")
+        download_adb()
+        tim.print("[green]SUCCESS:[/] Done!")
+
+    if adb_status == ADBStatus.NoDevice:
         tim.print(
             "[orange]WARNING:[/] No device detected! Possible causes:\n"
             "         - Developer Mode is off (check in the app on the phone)\n"
