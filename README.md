@@ -11,6 +11,7 @@ A little tool to manage packages on Meta Quest with multiple users.
 ### Windows
 1. Download [qumupam.exe](https://github.com/maximxlss/qumupam/releases/download/latest/qumupam.exe)
 2. Connect your Quest in Developer Mode and run `qumupam.exe`
+3. Dismiss the SmartScreen popup (it is actually basically impossible to make it not show that popup)
 ### Linux
 1. Run `pip install git+https://github.com/maximxlss/qumupam`
 2. Connect your Quest in Developer Mode and run `qumupam`
