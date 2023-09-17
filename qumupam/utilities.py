@@ -117,7 +117,10 @@ def check_aapt2_works() -> bool:
 
 @cachier(pickle_reload=False)
 def get_apk_label(path: str) -> Optional[str]:
-    aapt2_out = run_aapt2(["dump", "badging", path]).split("\n")
+    try:
+        aapt2_out = run_aapt2(["dump", "badging", path]).split("\n")
+    except CalledProcessError:
+        return None
 
     label_line = next((s for s in aapt2_out if s.startswith("application-label")), None)
 
