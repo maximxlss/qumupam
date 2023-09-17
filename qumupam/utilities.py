@@ -5,7 +5,7 @@ from pathlib import Path
 import platform
 import re
 import stat
-from subprocess import CalledProcessError, check_output
+from subprocess import CalledProcessError, check_output, DEVNULL
 from enum import Enum
 import sys
 from typing import Iterable, NamedTuple, Optional
@@ -53,12 +53,14 @@ class ADBStatus(Enum):
     NoDevice = 2
 
 
-def run_cmd(cmd: list[str]) -> str:
-    return check_output(cmd, text=True, encoding="UTF-8", stderr=sys.stderr)
+def run_cmd(cmd: list[str], silent=False) -> str:
+    return check_output(
+        cmd, text=True, encoding="UTF-8", stderr=DEVNULL if silent else sys.stderr
+    )
 
 
-def run_pm(cmd: list[str]) -> str:
-    return run_cmd([ADB_PATH, "shell", "pm", *cmd])
+def run_pm(cmd: list[str], silent=False) -> str:
+    return run_cmd([ADB_PATH, "shell", "pm", *cmd], silent)
 
 
 def download_adb():
@@ -159,8 +161,8 @@ def download_aapt2():
     run_cmd([ADB_PATH, "shell", "chmod", "+x", AAPT2_PATH_ON_DEVICE])
 
 
-def run_aapt2(cmd: list[str]) -> str:
-    return run_cmd([ADB_PATH, "shell", AAPT2_PATH_ON_DEVICE, *cmd])
+def run_aapt2(cmd: list[str], silent=False) -> str:
+    return run_cmd([ADB_PATH, "shell", AAPT2_PATH_ON_DEVICE, *cmd], silent)
 
 
 def check_aapt2_works() -> bool:
