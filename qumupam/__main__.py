@@ -37,9 +37,6 @@ def main():
             "[~https://developer.oculus.com/downloads/package/oculus-adb-drivers/]"
             "https://developer.oculus.com/downloads/package/oculus-adb-drivers/[/~]"
             " and rerun the script\n"
-            "[limegreen]HINT:[/] To install the drivers, right click on "
-            "[limegreen italic]android_winusb.inf[/] and click "
-            "[limegreen italic]install[/]"
         )
     elif adb_status == ADBStatus.NoDevice:
         tim.print(
@@ -161,13 +158,14 @@ def main():
 
     tim.print(f"[green]SUCCESS:[/] Operation finished in {time_passed:.3f} seconds.")
 
-    if (
-        platform.system() == "Windows"
-        and getattr(sys, "frozen", False)
-        and hasattr(sys, "_MEIPASS")
-    ):
-        os.system("pause")
-
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    finally:
+        if (
+            platform.system() == "Windows"
+            and getattr(sys, "frozen", False)
+            and hasattr(sys, "_MEIPASS")
+        ):
+            os.system("pause")
