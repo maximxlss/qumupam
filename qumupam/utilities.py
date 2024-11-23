@@ -40,8 +40,8 @@ def get_adb_url():
         raise NotImplementedError(f"No ADB for system {platform.system()}")
 
 
-ADB_FOLDER = Path.home() / ".cache" / "qumupam-adb"
-ADB_PATH = ADB_FOLDER / "platform-tools" / "adb"
+CACHE_FOLDER = Path.home() / ".cache" / "qumupam"
+ADB_PATH = CACHE_FOLDER / "platform-tools" / "adb"
 
 
 if platform.system() == "Windows":
@@ -70,10 +70,10 @@ def download_adb():
     with urllib.request.urlopen(url) as f:
         data = f.read()
 
-    ADB_FOLDER.mkdir(parents=True, exist_ok=True)
+    CACHE_FOLDER.mkdir(parents=True, exist_ok=True)
 
     with zipfile.ZipFile(BytesIO(data)) as archive:
-        archive.extractall(ADB_FOLDER)
+        archive.extractall(CACHE_FOLDER)
 
     if platform.system() != "Windows":
         ADB_PATH.chmod(ADB_PATH.stat().st_mode | stat.S_IEXEC)
@@ -167,7 +167,7 @@ def check_aapt2_works() -> bool:
         return e.returncode == 1
 
 
-@cachier(pickle_reload=False)
+@cachier(cache_dir=CACHE_FOLDER / 'apk_labels', pickle_reload=False)
 def get_apk_label(path: str) -> Optional[str]:
     try:
         aapt2_out = run_aapt2(["dump", "badging", path], silent=True).split("\n")
