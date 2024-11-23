@@ -41,7 +41,7 @@ def get_adb_url():
 
 
 ADB_FOLDER = Path.home() / ".cache" / "qumupam-adb"
-ADB_PATH = ADB_FOLDER / "adb"
+ADB_PATH = ADB_FOLDER / "platform-tools" / "adb"
 
 
 if platform.system() == "Windows":
@@ -73,9 +73,7 @@ def download_adb():
     ADB_FOLDER.mkdir(parents=True, exist_ok=True)
 
     with zipfile.ZipFile(BytesIO(data)) as archive:
-        for file in archive.namelist():
-            if file.startswith('platform-tools/'):
-                archive.extract(file, ADB_FOLDER / file.removeprefix('platform-tools/'))
+        archive.extractall(ADB_FOLDER)
 
     if platform.system() != "Windows":
         ADB_PATH.chmod(ADB_PATH.stat().st_mode | stat.S_IEXEC)
