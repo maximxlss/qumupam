@@ -32,6 +32,7 @@ def main():
         tim.print("[grey]INFO:[/] Downloading ADB...")
         download_adb()
         tim.print("[green]SUCCESS:[/] Done!")
+        adb_status = check_for_adb()
 
     if adb_status == ADBStatus.NoDevice:
         tim.print(
