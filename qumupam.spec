@@ -4,12 +4,14 @@ from PyInstaller.utils.hooks import copy_metadata
 
 block_cipher = None
 
+datas = []
+datas += copy_metadata('readchar')
 
 a = Analysis(
     ['qumupam\\__main__.py'],
     pathex=[],
     binaries=[],
-    datas=[copy_metadata('readchar')],
+    datas=datas,
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
