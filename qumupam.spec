@@ -8,7 +8,7 @@ a = Analysis(
     ['qumupam\\__main__.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[copy_metadata('readchar')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
