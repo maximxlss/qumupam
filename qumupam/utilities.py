@@ -40,7 +40,8 @@ def get_adb_url():
         raise NotImplementedError(f"No ADB for system {platform.system()}")
 
 
-ADB_PATH = Path.home() / ".cache" / "qumupam-adb" / "adb"
+ADB_FOLDER = Path.home() / ".cache" / "qumupam-adb"
+ADB_PATH = ADB_FOLDER / "adb"
 
 
 if platform.system() == "Windows":
@@ -69,17 +70,12 @@ def download_adb():
     with urllib.request.urlopen(url) as f:
         data = f.read()
 
-    archive = zipfile.ZipFile(BytesIO(data))
-    file = archive.read(
-        "platform-tools/adb.exe"
-        if platform.system() == "Windows"
-        else "platform-tools/adb"
-    )
+    ADB_FOLDER.mkdir(parents=True, exist_ok=True)
 
-    ADB_PATH.parent.mkdir(parents=True, exist_ok=True)
-
-    with open(ADB_PATH, "wb") as f:
-        f.write(file)
+    with zipfile.ZipFile(BytesIO(data)) as archive:
+        for file in archive.namelist():
+            if file.startswith('platform-tools/'):
+                archive.extract(file, ADB_FOLDER / file.removeprefix('platform-tools/'))
 
     if platform.system() != "Windows":
         ADB_PATH.chmod(ADB_PATH.stat().st_mode | stat.S_IEXEC)
