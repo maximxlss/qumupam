@@ -6,6 +6,7 @@ block_cipher = None
 
 datas = []
 datas += copy_metadata('readchar')
+datas += copy_metadata('cachier')
 
 a = Analysis(
     ['qumupam\\__main__.py'],
